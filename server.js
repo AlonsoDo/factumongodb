@@ -13,12 +13,13 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 var LocalUrl = 'mongodb://localhost:27017/mydb';
+var RemoteUrl = 'mongodb://Caspi:18122007@ds147052.mlab.com:47052/heroku_868pmk7c';
 
-MongoClient.connect(LocalUrl,function(err,database){
+MongoClient.connect(RemoteUrl,function(err,database){
     // ... start the servers
     assert.equal(null,err); // err handler
     db = database;
-    app.listen(3000,function(){
+    app.listen(process.env.PORT || 3000,function(){
         console.log('Server listening on 3000');
     });
 });

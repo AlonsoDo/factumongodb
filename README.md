@@ -50,16 +50,18 @@ client Document Extructure
     
 product Document Extructure
 
-{"productId":1,"companyId":2,"stock":10,"name":"Pera","price":"2.50","tax":"7,65"}
+    {
+        "productId":1,"companyId":2,"stock":10,"name":"Pera","price":"2.50","tax":"7,65"
+    }
 
 
 company Document Extructure
 
 {
     "companyId": 6,  // Automatic
-    "email": "pepecuenca@gmail.com",
+    "email": "pepesanchez@gmail.com",
     "pass": "1234",
-    "companyname": "Chess24",
+    "companyname": "ChessLive",
     "phones": [
         {                                            // Data you must provider (in req.body to test)
             "mobil": "607898981",
