@@ -12,12 +12,13 @@
   "author": "ApoloSoft",
   "license": "Free",
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "0.10.33",
+    "npm": "1.4.28"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
     "method-override": "^2.3.9",
     "mongodb": "1.4.9",
     "mongodb-autoincrement": "^1.0.1",

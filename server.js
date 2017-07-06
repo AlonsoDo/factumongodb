@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser= require('body-parser');
 var methodOverride = require('method-override');
 var app = express();
+var jwt = require('jsonwebtoken');
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var autoIncrement = require('mongodb-autoincrement');
@@ -22,11 +23,7 @@ MongoClient.connect(LocalUrl,function(err,database){
     });
 });
 
-app.get('/',function(req,res){
-    res.send('Hello World');
-});
-
-// Company
+// Company signup
 app.post('/companies',function(req,res){     
     autoIncrement.getNextSequence(db,'companies',function(err,autoIndex){
         assert.equal(null,err);
@@ -40,6 +37,58 @@ app.post('/companies',function(req,res){
     });     
 });
 
+app.post('/authenticate',function(req,res){
+    // find the company
+    db.collection('companies').findOne({email:req.body.email},function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }
+        if (!result) {
+            res.json({success:false,message:'Authentication failed. Company not found.'});
+        }else{
+            if (result.pass!=req.body.pass){
+                res.json({success:false,message:'Authentication failed. Wrong password.'});
+            }else{                
+                // create a token
+                var token = jwt.sign({companyId:result.companyId},'En un lugar de la mancha',{});        
+                // return the information including token as JSON
+                res.json({success:true,message:'Enjoy your token!',token:token});                
+            }              
+        }              
+    });
+});
+
+// route middleware to verify a token
+app.use(function(req,res,next){
+    // check header or url parameters or post parameters for token
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];  
+    // decode token
+    if (token){  
+        // verifies secret and checks exp
+        jwt.verify(token,'En un lugar de la mancha',function(err,decoded){      
+            if (err) {
+                return res.json({success:false,message:'Failed to authenticate token.'});    
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                next();
+            }
+        });  
+    } else {  
+        // if there is no token return an error
+        return res.status(403).send({success:false,message:'No token provided.'});      
+    }
+});
+
+// A partir de aqui no se ejecutan las rutas si no hay token...
+// From here the routes are not executed if there is no token ...
+
+app.get('/',function(req,res){
+    console.log('Company Id: '+req.decoded.companyId);
+    res.send('Hello World');
+});
+
+// List of companies allowed to login company
 app.get('/companies',function(req,res){    
     db.collection('companies').find().toArray(function(err,result){
         if(err){
@@ -56,7 +105,7 @@ app.post('/clients',function(req,res){
     autoIncrement.getNextSequence(db,'clients',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {clientId:autoIndex,companyId:req.body.companyId,email:req.body.email,pass:req.body.pass,firstname:req.body.firstname,secondname:req.body.secondname};
+        var document = {clientId:autoIndex,companyId:req.decoded.companyId,email:req.body.email,pass:req.body.pass,firstname:req.body.firstname,secondname:req.body.secondname,phone:req.body.phone};
         db.collection('clients').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
@@ -66,7 +115,7 @@ app.post('/clients',function(req,res){
 });
 
 app.get('/clients',function(req,res){    
-    db.collection('clients').find().toArray(function(err,result){
+    db.collection('clients').find({companyId:req.decoded.companyId}).toArray(function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
@@ -81,7 +130,7 @@ app.post('/products',function(req,res){
     autoIncrement.getNextSequence(db,'products',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {productId:autoIndex,companyId:req.body.companyId,stock:req.body.stock,name:req.body.name,price:req.body.price,tax:req.body.tax};
+        var document = {productId:autoIndex,companyId:req.decoded.companyId,stock:req.body.stock,name:req.body.name,price:req.body.price,tax:req.body.tax};
         db.collection('products').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
@@ -91,7 +140,7 @@ app.post('/products',function(req,res){
 });
 
 app.get('/products',function(req,res){    
-    db.collection('products').find().toArray(function(err,result){
+    db.collection('products').find({companyId:req.decoded.companyId}).toArray(function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
@@ -106,7 +155,7 @@ app.post('/bills',function(req,res){
     autoIncrement.getNextSequence(db,'bills',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {billId:autoIndex,companyId:req.body.companyId,date:req.body.date,detail:req.body.detail};
+        var document = {billId:autoIndex,companyId:req.decoded.companyId,date:req.body.date,detail:req.body.detail};
         db.collection('bills').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
@@ -116,7 +165,7 @@ app.post('/bills',function(req,res){
 });
 
 app.get('/bills',function(req,res){    
-    db.collection('bills').find().toArray(function(err,result){
+    db.collection('bills').find({companyId:req.decoded.companyId}).toArray(function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
