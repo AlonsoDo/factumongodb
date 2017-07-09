@@ -17,7 +17,7 @@ Extructure simple document of bill
             "name": "Apple",
             "price": "2.50",
             "tax": "7.00"
-        },                              // Data you must provider (in req.body)
+        },                              // Data you must provider (in req.body as raw JSON (application/json) into Postman)
         {
             "quantity": "2",
             "name": "Pear",

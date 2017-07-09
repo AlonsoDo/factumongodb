@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser= require('body-parser');
+var cors=require('cors');
 var methodOverride = require('method-override');
 var app = express();
 var jwt = require('jsonwebtoken');
@@ -8,6 +9,7 @@ var assert = require('assert');
 var autoIncrement = require('mongodb-autoincrement');
 var db;
 
+app.use(cors()); // To run 2 local servers without conflict
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use(methodOverride());
@@ -23,12 +25,13 @@ MongoClient.connect(LocalUrl,function(err,database){
     });
 });
 
+// Unprotect routes
 // Company signup
 app.post('/companies',function(req,res){     
     autoIncrement.getNextSequence(db,'companies',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {companyId:autoIndex,email:req.body.email,pass:req.body.pass,companyname:req.body.companyname,phones:[{mobil:req.body.mobil,work:req.body.work}]};
+        var document = {companyId:autoIndex,email:req.body.email,pass:req.body.pass,admin:req.body.admin,companyname:req.body.companyname,phones:[{mobil:req.body.mobil,work:req.body.work}]};
         db.collection('companies').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
@@ -37,7 +40,7 @@ app.post('/companies',function(req,res){
     });     
 });
 
-app.post('/authenticate',function(req,res){
+app.post('/authenticate',function(req,res){    
     // find the company
     db.collection('companies').findOne({email:req.body.email},function(err,result){
         if(err){
@@ -50,7 +53,7 @@ app.post('/authenticate',function(req,res){
                 res.json({success:false,message:'Authentication failed. Wrong password.'});
             }else{                
                 // create a token
-                var token = jwt.sign({companyId:result.companyId},'En un lugar de la mancha',{});        
+                var token = jwt.sign({companyId:result.companyId,admin:result.admin},'En un lugar de la mancha',{});        
                 // return the information including token as JSON
                 res.json({success:true,message:'Enjoy your token!',token:token});                
             }              
@@ -76,12 +79,12 @@ app.use(function(req,res,next){
         });  
     } else {  
         // if there is no token return an error
-        return res.status(403).send({success:false,message:'No token provided.'});      
+        return res.status(403).send({success:false,message:'No authenticate token provided.'});      
     }
 });
 
 // A partir de aqui no se ejecutan las rutas si no hay token...
-// From here the routes are not executed if there is no token ...
+// From here the routes are not executed if there is no authenticate token ...
 
 app.get('/',function(req,res){
     console.log('Company Id: '+req.decoded.companyId);
@@ -94,8 +97,11 @@ app.get('/companies',function(req,res){
         if(err){
             res.send(500,err.message);
         }else{        
-            console.log(result);
-            res.json(result); // To Postman by http://localhost:3000/companies GET
+            if (req.decoded.admin=='yes'){
+                res.json(result); // To Postman by http://localhost:3000/companies GET
+            }else{
+                res.json({success:false,message:'Operation allowed only for administrators'}); 
+            }            
         }
     });     
 });
@@ -125,6 +131,17 @@ app.get('/clients',function(req,res){
     });     
 });
 
+app.delete('/clients',function(req,res){
+    db.collection('clients').remove({clientId:parseInt(req.body.clientId)},function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/clients DELETE req.body.clientId
+        }
+    });
+}); 
+
 // Products
 app.post('/products',function(req,res){     
     autoIncrement.getNextSequence(db,'products',function(err,autoIndex){
@@ -150,12 +167,23 @@ app.get('/products',function(req,res){
     });     
 });
 
+app.delete('/products',function(req,res){
+    db.collection('products').remove({productId:parseInt(req.body.productId)},function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/products DELETE req.body.productId
+        }
+    });
+}); 
+
 // Bills
 app.post('/bills',function(req,res){     
     autoIncrement.getNextSequence(db,'bills',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {billId:autoIndex,companyId:req.decoded.companyId,date:req.body.date,detail:req.body.detail};
+        var document = {billId:autoIndex,companyId:req.decoded.companyId,date:req.body.date,detail:req.body.detail}; 
         db.collection('bills').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
@@ -174,3 +202,14 @@ app.get('/bills',function(req,res){
         }
     });     
 });
+
+app.delete('/bills',function(req,res){
+    db.collection('bills').remove({billId:parseInt(req.body.billId)},function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/bills DELETE req.body.billId
+        }
+    });
+});    
