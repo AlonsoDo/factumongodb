@@ -29,14 +29,30 @@ MongoClient.connect(LocalUrl,function(err,database){
 // Company signup
 app.post('/companies',function(req,res){     
     autoIncrement.getNextSequence(db,'companies',function(err,autoIndex){
-        assert.equal(null,err);
-        console.log('Next: '+autoIndex);
-        var document = {companyId:autoIndex,email:req.body.email,pass:req.body.pass,admin:req.body.admin,companyname:req.body.companyname,phones:[{mobil:req.body.mobil,work:req.body.work}]};
-        db.collection('companies').save(document,function(err,result){
-            assert.equal(null,err);    
-            console.log('saved to database');        
-            res.json(result);
-        });
+        if(err){
+            res.send(500,err.message);
+        }else{            
+            console.log('Next: '+autoIndex);
+            var document = { companyId:autoIndex,
+                                    email:req.body.email,
+                                    pass:req.body.pass,
+                                    admin:req.body.admin,
+                                    comercialcompanyname:req.body.comercialcompanyname,
+                                    fiscalcompanyname:req.body.fiscalcompanyname,
+                                    addres:req.body.addres,
+                                    postalcode:req.body.postalcode,
+                                    city:req.body.city,
+                                    nif:req.body.nif,
+                                    phones:{mobil:req.body.mobil,work:req.body.work}};
+            db.collection('companies').save(document,function(err,result){
+                if(err){
+                    res.send(500,err.message);
+                }else{   
+                    console.log('saved to database');        
+                    res.json(result);
+                }
+            });
+        }
     });     
 });
 
@@ -45,19 +61,28 @@ app.post('/authenticate',function(req,res){
     db.collection('companies').findOne({email:req.body.email},function(err,result){
         if(err){
             res.send(500,err.message);
-        }
-        if (!result) {
-            res.json({success:false,message:'Authentication failed. Company not found.'});
         }else{
-            if (result.pass!=req.body.pass){
-                res.json({success:false,message:'Authentication failed. Wrong password.'});
-            }else{                
-                // create a token
-                var token = jwt.sign({companyId:result.companyId,admin:result.admin},'En un lugar de la mancha',{});        
-                // return the information including token as JSON
-                res.json({success:true,message:'Enjoy your token!',token:token});                
-            }              
-        }              
+            if (!result) {
+                res.json({success:false,message:'Authentication failed. Company not found.'});
+            }else{
+                if (result.pass!=req.body.pass){
+                    res.json({success:false,message:'Authentication failed. Wrong password.'});
+                }else{
+                    console.log('Token create');
+                    console.log(result);
+                    // create a token
+                    var token = jwt.sign({companyId:result.companyId,admin:result.admin},'En un lugar de la mancha',{});        
+                    // return the information including token as JSON
+                    res.json({success:true,message:'Enjoy your token!',token:token,
+                                comercialcompanyname:result.comercialcompanyname,
+                                fiscalcompanyname:result.fiscalcompanyname,
+                                addres:result.addres,postalcode:result.postalcode,
+                                city:result.city,nif:result.nif,mobil:result.phones.mobil,
+                                work:result.phones.work
+                    });                
+                }              
+            }
+        }
     });
 });
 
@@ -104,6 +129,24 @@ app.get('/companies',function(req,res){
             }            
         }
     });     
+});
+
+app.put('/companies',function(req,res){    
+    console.log('Put');    
+    console.log(req.decoded.companyId);
+    var document = {companyId:req.decoded.companyId,email:req.body.email,pass:req.body.pass,admin:req.body.admin,
+                            comercialcompanyname:req.body.comercialcompanyname,fiscalcompanyname:req.body.fiscalcompanyname,
+                            addres:req.body.addres,postalcode:req.body.postalcode,city:req.body.city,nif:req.body.nif,
+                            phones:{mobil:req.body.mobil,work:req.body.work}};    
+    db.collection('companies').update({companyId:req.decoded.companyId},document,function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{   
+            console.log('saved to database');
+            console.log(result);
+            res.json(result);
+        }
+    });    
 });
 
 // Clients

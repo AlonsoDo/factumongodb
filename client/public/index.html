@@ -3,6 +3,7 @@
 <head>
     <title>Bills-MongoDb</title>
     <script src="js/jquery-2.2.1.min.js"></script>
+    <script src="js/company.js"></script>
     <link type="text/css" href="css/mystyle.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
@@ -14,41 +15,11 @@
         
         $(document).ready(function(){
             
-            $('#login').click(function(){                            
-                
-                $.ajax({
-		    url: 'http://localhost:3000/authenticate',                    
-                    type: 'post',
-                    contentType: 'application/json; charset=utf-8',
-		    data: JSON.stringify({email:$('#email').val(),pass:$('#pass').val()}),
-                    success: function(data){
-                        if (data.success){
-                            AuthenticateToken = data.token;
-                        }else{                            
-                            if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                                $('#colortitulo').toggleClass('modal-header-info modal-header-warning'); 
-                            } 
-                            $('#mensage').text(data.message);
-                            $('#titulo').text('Atenction!');
-                            $('#dialoginfo').modal({
-                                backdrop:'static',
-                                keyboard:false  
-                            });                            
-                        }                        
-                    },                    
-                    error: function(error){
-                        if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                            $('#colortitulo').toggleClass('modal-header-info modal-header-warning'); 
-                        } 
-                        $('#mensage').text('Error with the server');
-                        $('#titulo').text('Atenction!');
-                        $('#dialoginfo').modal({
-                            backdrop:'static',
-                            keyboard:false  
-                        });                        
-                    }
-                });          
-               
+            $('#view2').hide();
+            $('#viewcompany').hide();
+            
+            $('#login').click(function(){                
+                login();                
             });
             
             $('#newCompany').click(function(){
@@ -58,26 +29,72 @@
                 });
             });
             
+            $('#createCompany').click(function(){                
+                createCompany();                          
+            });
+            
+            $('#savecompanydata').click(function(){                
+                saveCompanyData();                
+            });
+            
         });
         
     </script>
 </head>
 <body>
-    <h1 style="margin-left:30px;">Bills-MongoDb App</h1>    
-    <img src="/img/logo.jpg">
-    <div id="logincontainer" style="background-color:#e8e8e8; border:6px white solid; width:300px; height:474px; margin-top:64px; margin-left:30px; float:left;">
-        <label style="margin:20px 0px 0px 6px; display:block; float:left; font-weight:bold; font-size:20px;">Email</label>
-        <input type="text" id="email" class="form-control" maxlength="100" placeholder="Intro email" style="float:left; margin-left:6px; margin-top:0px; width:277px; font-weight:bold; font-size:20px;"/>
-        <label style="margin:20px 0px 0px 6px; display:block; float:left; font-family:Arial,Helvetica,sans-serif; font-weight:bold; font-size:20px;">Password</label>
-        <input type="password" id="pass" class="form-control" maxlength="20" placeholder="Intro password" style="float:left; margin-left:6px; margin-top:0px; width:277px; font-weight:bold; font-size:20px;"/>
-        <button type="button" id="login" class="btn btn-default btn-lg" style="float:left; margin-left:7px; margin-top:20px;">
-            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login
+    <div style="width:1000px;">
+        <h1 style="float:left; margin-left:30px;">Bills-MongoDb App</h1>
+        <h1 id="companyTitle" style="float:left; margin-left:30px;">Your company name</h1>
+    </div>
+    <div id="view1" style="float:left; width:1000px;">
+        <div id="logincontainer" style="float:left; background-color:#e8e8e8; border:6px white solid; width:300px; height:474px; margin-top:64px; margin-left:30px; float:left;">
+            <label style="margin:20px 0px 0px 6px; display:block; float:left; font-weight:bold; font-size:20px;">Email</label>
+            <input type="text" id="email" class="form-control" maxlength="100" placeholder="Intro email" style="float:left; margin-left:6px; margin-top:0px; width:277px; font-weight:bold; font-size:20px;"/>
+            <label style="margin:20px 0px 0px 6px; display:block; float:left; font-family:Arial,Helvetica,sans-serif; font-weight:bold; font-size:20px;">Password</label>
+            <input type="password" id="pass" class="form-control" maxlength="20" placeholder="Intro password" style="float:left; margin-left:6px; margin-top:0px; width:277px; font-weight:bold; font-size:20px;"/>
+            <button type="button" id="login" class="btn btn-default btn-lg" style="float:left; margin-left:7px; margin-top:20px;">
+                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login
+            </button>
+            <button type="button" id="newCompany" class="btn btn-default btn-lg" style="float:left; margin-left:7px; margin-top:20px;">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Register
+            </button>
+            <a href="#" id="recoverpassword" style="float:left; margin-left:28px; margin-top:20px; font-weight:bold; font-size:20px;">Recover password</a>
+        </div>
+        <img id="imglogo" src="/img/logo.jpg" style="float:left;">
+    </div>
+    <div id="view2" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:40px; margin-top:6px;">
+        <a href="#" id="companydata" style="float:left; margin-left:16px; margin-top:10px; margin-right:12px; font-weight:bold; font-size:16px;">Company</a>            
+        <a href="#" id="clientsdata" style="float:left; margin-left:16px; margin-top:10px; margin-right:12px; font-weight:bold; font-size:16px;">Clients</a>            
+        <a href="#" id="productsdata" style="float:left; margin-left:16px; margin-top:10px; margin-right:12px; font-weight:bold; font-size:16px;">Products</a>            
+        <a href="#" id="billsdata" style="float:left; margin-left:16px; margin-top:10px; margin-right:12px; font-weight:bold; font-size:16px;">Bills</a>            
+        <a href="#" id="browsedata" style="float:left; margin-left:16px; margin-top:10px; margin-right:12px; font-weight:bold; font-size:16px;">Browse</a>            
+    </div>
+    <!-- Company -->
+    <div id="viewcompany" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:340px; margin-top:16px;">
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Comercial name:</label>
+        <input type="text" id="comercialname" class="form-control" maxlength="200" placeholder="Intro comercial name" style="float:left; margin-left:6px; margin-top:20px; width:330px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Fiscal name:</label>
+        <input type="text" id="fiscalname" class="form-control" maxlength="200" placeholder="Intro fiscal name" style="float:left; margin-left:6px; margin-top:20px; width:330px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Adress:</label>
+        <input type="text" id="addres" class="form-control" maxlength="400" placeholder="Intro adress" style="float:left; margin-left:6px; margin-top:20px; width:862px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Postal code:</label>
+        <input type="text" id="postalcode" class="form-control" maxlength="5" placeholder="00000" style="float:left; margin-left:6px; margin-top:20px; width:80px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">City:</label>
+        <input type="text" id="city" class="form-control" maxlength="50" placeholder="Intro city" style="float:left; margin-left:6px; margin-top:20px; width:426px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">NIF:</label>
+        <input type="text" id="nif" class="form-control" maxlength="10" placeholder="Intro nif" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Mobil phone:</label>
+        <input type="text" id="mobilphone" class="form-control" maxlength="15" placeholder="Intro mobil phone" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Work phone:</label>
+        <input type="text" id="workphone" class="form-control" maxlength="15" placeholder="Intro work phone" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <hr class="colored" style="margin-top:240px;"/>
+        <button type="button" id="savecompanydata" class="btn btn-default btn-lg" style="float:left; margin-left:30px; margin-top:5px;">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save changes
         </button>
-        <button type="button" id="newCompany" class="btn btn-default btn-lg" style="float:left; margin-left:7px; margin-top:20px;">
-            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Register
+        <button type="button" id="resetcompanydata" class="btn btn-default btn-lg" style="float:left; margin-left:30px; margin-top:5px;">
+            <span class="glyphicon glyphicon-random" aria-hidden="true"></span> Reset
         </button>
-        <a href="#" id="recoverpassword" style="float:left; margin-left:28px; margin-top:20px; font-weight:bold; font-size:20px;">Recover password</a>
-    </div>    
+    </div>
     <!-- Modal Informacion -->
     <div class="modal fade" id="dialoginfo" role="dialog">
         <div class="modal-dialog modal-sm">
@@ -95,7 +112,7 @@
             </div>            
         </div>
     </div>    
-    <!-- Modal  New User-->
+    <!-- Modal  New Company-->
     <div class="modal fade" id="newCompanyForm" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" style="width:350px;">
             <div class="modal-content">                
@@ -133,7 +150,7 @@
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default btn-lg" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Close</button>
-                    <button type="button" id="saveCompany" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save company</button>
+                    <button type="button" id="createCompany" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save company</button>
                 </div>
             </div>
         </div>

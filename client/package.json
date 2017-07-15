@@ -1,6 +1,6 @@
 {
   "name": "BillsMongoDbClient",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Web App para programa de facturacion multicompania consumiendo RESTful Api",
   "main": "index.html",
   "keywords": [
@@ -13,7 +13,7 @@
   "author": "ApoloSoft",
   "license": "Free",
   "engines": {
-    "node": "0.10.33",
+    "node": "4.8.4",
     "npm": "1.4.28"
   },
   "dependencies": {

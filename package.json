@@ -1,6 +1,6 @@
 {
   "name": "FactuMongoDb",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Api Restful para programa de facturacion multicompania utilizando MongoDb como base de datos",
   "main": "index.html",
   "keywords": [
@@ -12,7 +12,7 @@
   "author": "ApoloSoft",
   "license": "Free",
   "engines": {
-    "node": "0.10.33",
+    "node": "4.8.4",
     "npm": "1.4.28"
   },
   "dependencies": {
