@@ -122,11 +122,11 @@ app.get('/companies',function(req,res){
         if(err){
             res.send(500,err.message);
         }else{        
-            if (req.decoded.admin=='yes'){
+            //if (req.decoded.admin=='yes'){
                 res.json(result); // To Postman by http://localhost:3000/companies GET
-            }else{
-                res.json({success:false,message:'Operation allowed only for administrators'}); 
-            }            
+            //}else{
+                //res.json({success:false,message:'Operation allowed only for administrators'}); 
+            //}            
         }
     });     
 });
@@ -154,22 +154,61 @@ app.post('/clients',function(req,res){
     autoIncrement.getNextSequence(db,'clients',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {clientId:autoIndex,companyId:req.decoded.companyId,email:req.body.email,pass:req.body.pass,firstname:req.body.firstname,secondname:req.body.secondname,phone:req.body.phone};
+        var document = {clientId:autoIndex,companyId:req.decoded.companyId,email:req.body.email,
+                                comercialnameclient:req.body.comercialnameclient,fiscalnameclient:req.body.fiscalnameclient,
+                                addresclient:req.body.addresclient,postalcodeclient:req.body.postalcodeclient,cityclient:req.body.cityclient,
+                                nifclient:req.body.nifclient,phones:{mobilphoneclient:req.body.mobilphoneclient,workphoneclient:req.body.workphoneclient},
+                                personalcontactclient:req.body.personalcontactclient};
         db.collection('clients').save(document,function(err,result){
             assert.equal(null,err);    
-            console.log('saved to database');        
+            console.log('saved client to database');        
             res.json(result);
         });
     });     
 });
 
-app.get('/clients',function(req,res){    
+app.get('/clients',function(req,res){     
+    
     db.collection('clients').find({companyId:req.decoded.companyId}).toArray(function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
             console.log(result);
             res.json(result); // To Postman by http://localhost:3000/clients GET
+        }
+    });     
+});
+
+app.post('/searchclients',function(req,res){     
+    
+    var cCad = req.body.orderresult;
+    console.log('Orden:'+cCad);    
+    var mysort = {}; 
+    mysort[cCad] = 1;
+    console.log(mysort);
+    
+    var cCad2 = req.body.contentsearchclient;
+    var regex;
+    if (cCad=='clientId'){
+        cCad2=parseInt(cCad2);
+        console.log(cCad2);
+        regex = cCad2;
+    }else{
+        regex = new RegExp(cCad2);
+    }        
+    
+    var ObjToFind = {};
+    ObjToFind['companyId']=req.decoded.companyId;    
+    ObjToFind[cCad]=regex;    
+    
+    //db.collection('clients').find({companyId:req.decoded.companyId,email:regex}).sort(mysort).toArray(function(err,result){
+    db.collection('clients').find(ObjToFind).sort(mysort).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/searchclients GET
         }
     });     
 });

@@ -4,10 +4,15 @@
     <title>Bills-MongoDb</title>
     <script src="js/jquery-2.2.1.min.js"></script>
     <script src="js/company.js"></script>
+    <script src="js/client.js"></script>
     <link type="text/css" href="css/mystyle.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script>
+
     <script type="text/javascript">
         
         var AuthenticateToken;
@@ -17,6 +22,7 @@
             
             $('#view2').hide();
             $('#viewcompany').hide();
+            $('#viewclient').hide();
             
             $('#login').click(function(){                
                 login();                
@@ -35,6 +41,29 @@
             
             $('#savecompanydata').click(function(){                
                 saveCompanyData();                
+            });
+            
+            $('#companydata').click(function(){                
+                $('#viewcompany').show();
+                $('#viewclient').hide();                
+            });
+            
+            $('#clientsdata').click(function(){                
+                $('#viewcompany').hide();
+                $('#viewclient').show();
+            });
+            
+            $('#searchclient').selectpicker({
+                style: 'btn-default',
+                size: 8
+            });
+            
+            $('#SaveClient').click(function(){                
+                createClient();                
+            });
+            
+            $('#SearchClient').click(function(){                
+                searchClient();                
             });
             
         });
@@ -94,6 +123,72 @@
         <button type="button" id="resetcompanydata" class="btn btn-default btn-lg" style="float:left; margin-left:30px; margin-top:5px;">
             <span class="glyphicon glyphicon-random" aria-hidden="true"></span> Reset
         </button>
+    </div>
+    <!-- Client -->
+    <div id="viewclient" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:420px; margin-top:16px;">
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Comercial name:</label>
+        <input type="text" id="comercialnameclient" class="form-control" maxlength="200" placeholder="Intro comercial name" style="float:left; margin-left:6px; margin-top:20px; width:330px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Fiscal name:</label>
+        <input type="text" id="fiscalnameclient" class="form-control" maxlength="200" placeholder="Intro fiscal name" style="float:left; margin-left:6px; margin-top:20px; width:330px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Adress:</label>
+        <input type="text" id="addresclient" class="form-control" maxlength="300" placeholder="Intro adress" style="float:left; margin-left:6px; margin-top:20px; width:502px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Email:</label>        
+        <input type="text" id="emailclient" class="form-control" maxlength="100" placeholder="Intro email adress" style="float:left; margin-left:6px; margin-top:20px; width:276px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Postal code:</label>
+        <input type="text" id="postalcodeclient" class="form-control" maxlength="5" placeholder="00000" style="float:left; margin-left:6px; margin-top:20px; width:80px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">City:</label>
+        <input type="text" id="cityclient" class="form-control" maxlength="50" placeholder="Intro city" style="float:left; margin-left:6px; margin-top:20px; width:251px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Personal contact:</label>
+        <input type="text" id="personalcontactclient" class="form-control" maxlength="100" placeholder="Intro personal contact" style="float:left; margin-left:6px; margin-top:20px; width:251px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">NIF:</label>
+        <input type="text" id="nifclient" class="form-control" maxlength="10" placeholder="Intro nif" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Mobil phone:</label>
+        <input type="text" id="mobilphoneclient" class="form-control" maxlength="15" placeholder="Intro mobil phone" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Work phone:</label>
+        <input type="text" id="workphoneclient" class="form-control" maxlength="15" placeholder="Intro work phone" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
+        <hr class="colored" style="margin-top:240px;"/>
+        <button type="button" id="IniClient" class="btn btn-default btn-lg" title="Ini" style="margin-left:50px; float:left;"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+        <button type="button" id="PrevClient" class="btn btn-default btn-lg" title="Prev" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+        <button type="button" id="NextClient" class="btn btn-default btn-lg" title="Next" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+        <button type="button" id="EndClient" class="btn btn-default btn-lg" title="End" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+        <button type="button" id="NewClient" class="btn btn-default btn-lg" title="New" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
+        <button type="button" id="DeleteClient" class="btn btn-default btn-lg" title="Delete" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>
+        <button type="button" id="SaveClient" class="btn btn-default btn-lg" title="Save" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+        <button type="button" id="ResetClient" class="btn btn-default btn-lg" title="Reset" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+        <label style="margin-left:50px;  margin-top:16px; display:block; float:left; font-weight:bold; font-size:16px;">Client code:</label>
+        <input type="text" id="codeclient" readonly class="form-control" maxlength="5" placeholder="00000" style="float:left; margin-left:6px; margin-top:10px; width:80px; font-weight:bold; font-size:16px;"/>
+        <div class="row" style="margin-left:40px; margin-top:30px;">
+            <div class="col-xs-3">
+                <div class="form-group">                    
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-left:36px; margin-top:30px;">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <select id="searchclient" class="selectpicker form-control">
+                        <option value="clientId" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Client code</label>">Client code</option>
+                        <option value="comercialnameclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Comercial name</label>">Comercial name</option>
+                        <option value="email" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Email</label>">Email</option>
+                        <option value="postalcodeclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Postal code</label>">Postal code</option>
+                        <option value="cityclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>City</label>">City</option>
+                        <option value="nifclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>NIF</label>">NIF</option>
+                        <option value="mobilphoneclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Mobil phone</label>">Mobil phone</option>
+                        <option value="workphoneclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Work phone</label>">Work phone</option>
+                    </select>                    
+                </div>                
+            </div>            
+            <div class="col-xs-3">
+                <div class="form-group">            
+                    <input type="text" id="contentsearchclient" class="form-control" maxlength="200" placeholder="Search client" style="float:left; margin-left:16px; margin-top:8px; width:330px; font-weight:bold; font-size:16px;"/>
+                </div>                
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group">            
+                    <button type="button" id="SearchClient" class="btn btn-default btn-lg" title="Search" style="margin-left:120px; float:left;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>                
+            </div>
+        </div>        
     </div>
     <!-- Modal Informacion -->
     <div class="modal fade" id="dialoginfo" role="dialog">
