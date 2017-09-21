@@ -116,7 +116,7 @@ app.get('/',function(req,res){
     res.send('Hello World');
 });
 
-// List of companies allowed to login company
+// List of companies 
 app.get('/companies',function(req,res){    
     db.collection('companies').find().toArray(function(err,result){
         if(err){
@@ -188,6 +188,36 @@ app.post('/searchclients',function(req,res){
     console.log(mysort);
     
     var cCad2 = req.body.contentsearchclient;
+    
+    if (cCad=='clientId'){
+        cCad2=parseInt(cCad2);
+        console.log(cCad2);
+    }      
+    
+    var ObjToFind = {};
+    ObjToFind['companyId']=req.decoded.companyId;    
+    ObjToFind[cCad]={$gte:cCad2};    
+    
+    db.collection('clients').find(ObjToFind).sort(mysort).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/searchclients GET
+        }
+    });     
+});
+
+app.post('/searchclientsfilter',function(req,res){     
+    
+    var cCad = req.body.orderresult;
+    console.log('Orden:'+cCad);    
+    var mysort = {}; 
+    mysort[cCad] = 1;
+    console.log(mysort);
+    
+    var cCad2 = req.body.contentsearchclient;
     var regex;
     if (cCad=='clientId'){
         cCad2=parseInt(cCad2);
@@ -201,14 +231,13 @@ app.post('/searchclients',function(req,res){
     ObjToFind['companyId']=req.decoded.companyId;    
     ObjToFind[cCad]=regex;    
     
-    //db.collection('clients').find({companyId:req.decoded.companyId,email:regex}).sort(mysort).toArray(function(err,result){
     db.collection('clients').find(ObjToFind).sort(mysort).toArray(function(err,result){
     
         if(err){
             res.send(500,err.message);
         }else{        
             console.log(result);
-            res.json(result); // To Postman by http://localhost:3000/searchclients GET
+            res.json(result); // To Postman by http://localhost:3000/searchclientsfilter GET
         }
     });     
 });

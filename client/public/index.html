@@ -62,8 +62,12 @@
                 createClient();                
             });
             
-            $('#SearchClient').click(function(){                
-                searchClient();                
+            $('#SearchClients').click(function(){                
+                searchClients();                
+            });
+            
+            $('#SearchClientsFilter').click(function(){                
+                searchClientsFilter();                
             });
             
         });
@@ -183,9 +187,14 @@
                     <input type="text" id="contentsearchclient" class="form-control" maxlength="200" placeholder="Search client" style="float:left; margin-left:16px; margin-top:8px; width:330px; font-weight:bold; font-size:16px;"/>
                 </div>                
             </div>
-            <div class="col-xs-3">
+            <div class="col-xs-2">
                 <div class="form-group">            
-                    <button type="button" id="SearchClient" class="btn btn-default btn-lg" title="Search" style="margin-left:120px; float:left;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    <button type="button" id="SearchClients" class="btn btn-default btn-lg" title="Search clients" style="margin-left:120px; float:left;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>                
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">            
+                    <button type="button" id="SearchClientsFilter" class="btn btn-default btn-lg" title="Filter clients" style="margin-left:20px; float:left;"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
                 </div>                
             </div>
         </div>        
