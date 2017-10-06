@@ -24,6 +24,8 @@
             $('#viewcompany').hide();
             $('#viewclient').hide();
             
+            DeactiveClient();
+            
             $('#login').click(function(){                
                 login();                
             });
@@ -58,9 +60,40 @@
                 size: 8
             });
             
-            $('#SaveClient').click(function(){                
-                createClient();                
+            $('#NewClient').click(function(){                
+                $('#NewClient').prop('disabled',true);
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+                $('#codeclient').val('0');
+                $('#comercialnameclient').val('');
+                $('#fiscalnameclient').val('');
+                $('#addresclient').val('');
+                $('#emailclient').val('');
+                $('#postalcodeclient').val('');
+                $('#cityclient').val('');
+                $('#personalcontactclient').val('');
+                $('#nifclient').val('');
+                $('#mobilphoneclient').val('');
+                $('#workphoneclient').val('');
+                UpdateMode = 'New';
+                ActiveClient();
             });
+            
+            $('#SaveClient').click(function(){                
+                if (UpdateMode == 'New') {
+                    createClient();
+                    UpdateMode = 'Update';
+                }else{
+                    updateClient();
+                }                
+                $('#SaveClient').prop('disabled',true);
+                $('#ResetClient').prop('disabled',true);
+                $('#NewClient').prop('disabled',false);
+            });
+            
+            $('#ResetClient').click(function(){
+                ResetClient();
+            });    
             
             $('#SearchClients').click(function(){                
                 searchClients();                
@@ -68,6 +101,72 @@
             
             $('#SearchClientsFilter').click(function(){                
                 searchClientsFilter();                
+            });
+            
+            $('#NextClient').click(function(){                
+                nextClient();                
+            });
+            
+            $('#PrevClient').click(function(){                
+                prevClient();                
+            });
+            
+            $('#IniClient').click(function(){                
+                iniClient();                
+            });
+            
+            $('#EndClient').click(function(){                
+                endClient();                
+            });
+            
+            $('#comercialnameclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#fiscalnameclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#addresclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#emailclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#postalcodeclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#cityclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#personalcontactclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#nifclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#mobilphoneclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
+            });
+            
+            $('#workphoneclient').focus(function(){
+                $('#SaveClient').prop('disabled',false);
+                $('#ResetClient').prop('disabled',false);
             });
             
         });
@@ -151,14 +250,14 @@
         <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Work phone:</label>
         <input type="text" id="workphoneclient" class="form-control" maxlength="15" placeholder="Intro work phone" style="float:left; margin-left:6px; margin-top:20px; width:180px; font-weight:bold; font-size:16px;"/>
         <hr class="colored" style="margin-top:240px;"/>
-        <button type="button" id="IniClient" class="btn btn-default btn-lg" title="Ini" style="margin-left:50px; float:left;"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
-        <button type="button" id="PrevClient" class="btn btn-default btn-lg" title="Prev" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
-        <button type="button" id="NextClient" class="btn btn-default btn-lg" title="Next" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
-        <button type="button" id="EndClient" class="btn btn-default btn-lg" title="End" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+        <button type="button" id="IniClient" disabled class="btn btn-default btn-lg" title="Ini" style="margin-left:50px; float:left;"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+        <button type="button" id="PrevClient" disabled class="btn btn-default btn-lg" title="Prev" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+        <button type="button" id="NextClient" disabled class="btn btn-default btn-lg" title="Next" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+        <button type="button" id="EndClient" disabled class="btn btn-default btn-lg" title="End" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
         <button type="button" id="NewClient" class="btn btn-default btn-lg" title="New" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
-        <button type="button" id="DeleteClient" class="btn btn-default btn-lg" title="Delete" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>
-        <button type="button" id="SaveClient" class="btn btn-default btn-lg" title="Save" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
-        <button type="button" id="ResetClient" class="btn btn-default btn-lg" title="Reset" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+        <button type="button" id="DeleteClient" disabled class="btn btn-default btn-lg" title="Delete" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span></button>
+        <button type="button" id="SaveClient" disabled class="btn btn-default btn-lg" title="Save" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+        <button type="button" id="ResetClient" disabled class="btn btn-default btn-lg" title="Reset" style="margin-left:10px; float:left;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
         <label style="margin-left:50px;  margin-top:16px; display:block; float:left; font-weight:bold; font-size:16px;">Client code:</label>
         <input type="text" id="codeclient" readonly class="form-control" maxlength="5" placeholder="00000" style="float:left; margin-left:6px; margin-top:10px; width:80px; font-weight:bold; font-size:16px;"/>
         <div class="row" style="margin-left:40px; margin-top:30px;">

@@ -122,11 +122,11 @@ app.get('/companies',function(req,res){
         if(err){
             res.send(500,err.message);
         }else{        
-            //if (req.decoded.admin=='yes'){
+            if (req.decoded.admin=='yes'){
                 res.json(result); // To Postman by http://localhost:3000/companies GET
-            //}else{
-                //res.json({success:false,message:'Operation allowed only for administrators'}); 
-            //}            
+            }else{
+                res.json({success:false,message:'Operation allowed only for administrators'}); 
+            }            
         }
     });     
 });
@@ -150,7 +150,7 @@ app.put('/companies',function(req,res){
 });
 
 // Clients
-app.post('/clients',function(req,res){     
+app.post('/newclient',function(req,res){     
     autoIncrement.getNextSequence(db,'clients',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
@@ -162,9 +162,31 @@ app.post('/clients',function(req,res){
         db.collection('clients').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved client to database');        
-            res.json(result);
+            res.json({ClientCode:autoIndex,CompanyCode:req.decoded.companyId});
         });
     });     
+});
+
+app.put('/updateclient',function(req,res){     
+    
+    console.log('ClientId = '+req.body.clientId);
+    console.log('Comercial name = '+req.body.comercialnameclient);
+    
+    var document = {clientId:parseInt(req.body.clientId),companyId:req.decoded.companyId,email:req.body.email,
+                            comercialnameclient:req.body.comercialnameclient,fiscalnameclient:req.body.fiscalnameclient,
+                            addresclient:req.body.addresclient,postalcodeclient:req.body.postalcodeclient,cityclient:req.body.cityclient,
+                            nifclient:req.body.nifclient,phones:{mobilphoneclient:req.body.mobilphoneclient,workphoneclient:req.body.workphoneclient},
+                            personalcontactclient:req.body.personalcontactclient};
+    db.collection('clients').update({clientId:parseInt(req.body.clientId)},document,function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{   
+            console.log('update to database');
+            console.log(result);
+            res.json(result);
+        }
+    });
+    
 });
 
 app.get('/clients',function(req,res){     
