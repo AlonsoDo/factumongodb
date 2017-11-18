@@ -47,7 +47,8 @@ function updateClient(){
             aClients[ClientIndex].nifclient = $('#nifclient').val();
             aClients[ClientIndex].phones.mobilphoneclient = $('#mobilphoneclient').val();
             aClients[ClientIndex].phones.workphoneclient = $('#workphoneclient').val();
-            aClients[ClientIndex].personalcontactclient = $('#personalcontactclient').val();            
+            aClients[ClientIndex].personalcontactclient = $('#personalcontactclient').val();
+            BufferingClientData();
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
                 $('#colortitulo').toggleClass('modal-header modal-header-info'); 
             } 
@@ -120,6 +121,8 @@ function createClient(){
                 keyboard:false  
             });
             ActiveClient();
+            BufferingClientData();
+            $('#DeleteClient').prop('disabled',false);
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
@@ -191,6 +194,7 @@ function searchClients(){
                 LoadClientData();
                 ActiveClient();
                 BufferingClientData();
+                $('#DeleteClient').prop('disabled',false);
             }else{                
                 ClientIndex = 0;
                 LoadClientData();
@@ -198,6 +202,7 @@ function searchClients(){
                 BufferingClientData();
                 $('#NextClient').prop('disabled',false);
                 $('#EndClient').prop('disabled',false);
+                $('#DeleteClient').prop('disabled',false);
             }            
         },                    
         error: function(error){
@@ -271,6 +276,7 @@ function searchClientsFilter(){
                 LoadClientData();
                 ActiveClient();
                 BufferingClientData();
+                $('#DeleteClient').prop('disabled',false);
             }else{                
                 ClientIndex = 0;
                 LoadClientData();
@@ -278,6 +284,7 @@ function searchClientsFilter(){
                 BufferingClientData();
                 $('#NextClient').prop('disabled',false);
                 $('#EndClient').prop('disabled',false);
+                $('#DeleteClient').prop('disabled',false);
             }            
         },                    
         error: function(error){
@@ -293,6 +300,87 @@ function searchClientsFilter(){
         }
     });
 }
+
+function deleteClient(){    
+        
+    $.ajax({
+	statusCode:{500:function(){
+                if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                }                
+                $('#mensage').text('Error with the server');
+                $('#titulo').text('Atenction!');
+                $('#dialoginfo').modal({
+                    backdrop:'static',
+                    keyboard:false  
+                }); 
+            }
+        },
+        headers: { 'x-access-token': AuthenticateToken },
+        url: 'http://localhost:3000/deleteclient',                    
+        type: 'delete',
+        contentType: 'application/json; charset=utf-8',
+	data: JSON.stringify({clientId:$('#codeclient').val()}),
+        success: function(data){
+            //Update array
+            aClients.splice(ClientIndex,1);
+            if (aClients.length==0){
+                DeactiveClient();
+                $('#codeclient').val('0');
+                $('#comercialnameclient').val('');
+                $('#fiscalnameclient').val('');
+                $('#addresclient').val('');
+                $('#emailclient').val('');
+                $('#postalcodeclient').val('');
+                $('#cityclient').val('');
+                $('#personalcontactclient').val('');
+                $('#nifclient').val('');
+                $('#mobilphoneclient').val('');
+                $('#workphoneclient').val('');                    
+                $('#SaveClient').prop('disabled',true);
+                $('#ResetClient').prop('disabled',true);
+                $('#NewClient').prop('disabled',false);
+                $('#DeleteClient').prop('disabled',true);
+            }else{
+                ClientIndex--;
+                if (ClientIndex<0) {
+                    ClientIndex = 0;
+                    $('#PrevClient').prop('disabled',true);
+                    $('#IniClient').prop('disabled',true);
+                }
+                LoadClientData();
+                BufferingClientData();
+                if (aClients.length==1){
+                    $('#PrevClient').prop('disabled',true);
+                    $('#IniClient').prop('disabled',true);
+                    $('#NextClient').prop('disabled',true);
+                    $('#EndClient').prop('disabled',true); 
+                }
+            }
+            if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
+                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
+            } 
+            $('#mensage').text('Client delete');
+            $('#titulo').text('Information');
+            $('#dialoginfo').modal({
+                backdrop:'static',
+                keyboard:false  
+            });            
+        },                    
+        error: function(error){
+            if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+            } 
+            $('#mensage').text('Error with the server');
+            $('#titulo').text('Atenction!');
+            $('#dialoginfo').modal({
+                backdrop:'static',
+                keyboard:false  
+            });                        
+        }
+    });
+    
+}    
 
 function nextClient(){
     
@@ -314,6 +402,7 @@ function nextClient(){
     $('#SaveClient').prop('disabled',true);
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
+    $('#DeleteClient').prop('disabled',false);
     
 }
 
@@ -337,6 +426,7 @@ function prevClient(){
     $('#SaveClient').prop('disabled',true);
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
+    $('#DeleteClient').prop('disabled',false);
         
 }
 
@@ -358,6 +448,7 @@ function iniClient(){
     $('#SaveClient').prop('disabled',true);
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
+    $('#DeleteClient').prop('disabled',false);
     
 }
 
@@ -379,6 +470,7 @@ function endClient(){
     $('#SaveClient').prop('disabled',true);
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
+    $('#DeleteClient').prop('disabled',false);
     
 }
 
@@ -465,5 +557,6 @@ function ResetClient(){
     $('#SaveClient').prop('disabled',true);
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
+    $('#DeleteClient').prop('disabled',false);
     
 }

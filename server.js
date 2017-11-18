@@ -259,34 +259,49 @@ app.post('/searchclientsfilter',function(req,res){
             res.send(500,err.message);
         }else{        
             console.log(result);
-            res.json(result); // To Postman by http://localhost:3000/searchclientsfilter GET
+            res.json(result); 
         }
     });     
 });
 
-app.delete('/clients',function(req,res){
+app.delete('/deleteclient',function(req,res){
     db.collection('clients').remove({clientId:parseInt(req.body.clientId)},function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
             console.log(result);
-            res.json(result); // To Postman by http://localhost:3000/clients DELETE req.body.clientId
+            res.json(result); 
         }
     });
 }); 
 
 // Products
-app.post('/products',function(req,res){     
+app.post('/newproduct',function(req,res){     
     autoIncrement.getNextSequence(db,'products',function(err,autoIndex){
         assert.equal(null,err);
         console.log('Next: '+autoIndex);
-        var document = {productId:autoIndex,companyId:req.decoded.companyId,stock:req.body.stock,name:req.body.name,price:req.body.price,tax:req.body.tax};
+        var document = {productId:autoIndex,companyId:req.decoded.companyId,stock:req.body.stock,name:req.body.name,price:req.body.price,tax:req.body.tax,discount:req.body.discount};
         db.collection('products').save(document,function(err,result){
             assert.equal(null,err);    
             console.log('saved to database');        
-            res.json(result);
+            res.json({ProductCode:autoIndex,CompanyCode:req.decoded.companyId});
         });
     });     
+});
+
+app.put('/updateproduct',function(req,res){     
+    console.log('ProductId = '+req.body.productId);
+    console.log('Product name = '+req.body.name);                            
+    var document = {productId:parseInt(req.body.productId),companyId:req.decoded.companyId,stock:req.body.stock,name:req.body.name,price:req.body.price,tax:req.body.tax,discount:req.body.discount};
+    db.collection('products').update({productId:parseInt(req.body.productId)},document,function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{   
+            console.log('update to database');
+            console.log(result);
+            res.json({ProductCode:req.body.productId,CompanyCode:req.decoded.companyId});
+        }
+    });    
 });
 
 app.get('/products',function(req,res){    
@@ -300,7 +315,78 @@ app.get('/products',function(req,res){
     });     
 });
 
-app.delete('/products',function(req,res){
+app.post('/searchproducts',function(req,res){     
+    
+    var cCad = req.body.orderresult;
+    console.log('Orden:'+cCad);    
+    var mysort = {};     
+    
+    var cCad2 = req.body.contentsearchproduct;
+    
+    if (cCad=='productId'){
+        cCad2=parseInt(cCad2);
+        console.log(cCad2);
+    }
+    
+    if (cCad=='productName'){
+        cCad='name';
+        console.log(cCad);
+    }
+    
+    mysort[cCad] = 1;
+    console.log(mysort);
+    
+    var ObjToFind = {};
+    ObjToFind['companyId']=req.decoded.companyId;    
+    ObjToFind[cCad]={$gte:cCad2};    
+    
+    db.collection('products').find(ObjToFind).sort(mysort).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/searchproducts GET
+        }
+    });     
+});
+
+app.post('/searchproductsfilter',function(req,res){     
+    
+    var cCad = req.body.orderresult;
+        
+    var cCad2 = req.body.contentsearchproduct;
+    var regex;
+    if (cCad=='productId'){
+        cCad2=parseInt(cCad2);
+        console.log(cCad2);
+        regex = cCad2;
+    }else{
+        cCad = 'name';
+        regex = new RegExp(cCad2);
+    }
+    
+    var mysort = {}; 
+    mysort[cCad] = 1;
+    console.log(mysort);
+    
+    var ObjToFind = {};
+    ObjToFind['companyId']=req.decoded.companyId;    
+    ObjToFind[cCad]=regex;    
+    
+    db.collection('products').find(ObjToFind).sort(mysort).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); 
+        }
+    });
+    
+});
+
+app.delete('/deleteproduct',function(req,res){
     db.collection('products').remove({productId:parseInt(req.body.productId)},function(err,result){
         if(err){
             res.send(500,err.message);
