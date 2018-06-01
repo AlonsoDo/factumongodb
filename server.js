@@ -315,6 +315,18 @@ app.get('/products',function(req,res){
     });     
 });
 
+app.post('/fillProduct',function(req,res){    
+    console.log(parseInt(req.body.productCode))
+    db.collection('products').findOne({productId:parseInt(req.body.productCode)},function(err,result){
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); 
+        }
+    });     
+});
+
 app.post('/searchproducts',function(req,res){     
     
     var cCad = req.body.orderresult;

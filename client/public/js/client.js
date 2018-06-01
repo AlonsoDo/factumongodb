@@ -12,13 +12,14 @@ var BufferClientNif;
 var BufferClientMobilPhone;
 var BufferClientWorkPhone;
 var BufferClientPersonalContact;
+var CodeClientSended = 0;
 
 function updateClient(){
         
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
                 }                
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -50,7 +51,7 @@ function updateClient(){
             aClients[ClientIndex].personalcontactclient = $('#personalcontactclient').val();
             BufferingClientData();
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
-                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
+                $('#colortitulo').removeClass('modal-header modal-header-warning').addClass('modal-header modal-header-info'); 
             } 
             $('#mensage').text('Client update');
             $('#titulo').text('Information');
@@ -61,7 +62,7 @@ function updateClient(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -78,7 +79,7 @@ function createClient(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
                 }                
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -112,7 +113,7 @@ function createClient(){
                 $('#IniClient').prop('disabled',false);
             }
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
-                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
+                $('#colortitulo').removeClass('modal-header modal-header-warning').addClass('modal-header modal-header-info'); 
             } 
             $('#mensage').text('New client create');
             $('#titulo').text('Information');
@@ -126,7 +127,7 @@ function createClient(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -146,7 +147,7 @@ function searchClients(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
                 }                
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -181,7 +182,7 @@ function searchClients(){
                 $('#mobilphoneclient').val('');
                 $('#workphoneclient').val('');
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
                 } 
                 $('#mensage').text('No client found');
                 $('#titulo').text('Atenction!');
@@ -207,7 +208,7 @@ function searchClients(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -227,7 +228,7 @@ function searchClientsFilter(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
                 }                
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -263,7 +264,7 @@ function searchClientsFilter(){
                 $('#workphoneclient').val('');
                 $('#NextClient').prop('disabled',true);
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
                 } 
                 $('#mensage').text('No client found');
                 $('#titulo').text('Atenction!');
@@ -289,7 +290,7 @@ function searchClientsFilter(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -306,7 +307,7 @@ function deleteClient(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
                 }                
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -358,7 +359,7 @@ function deleteClient(){
                 }
             }
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
-                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
+                $('#colortitulo').removeClass('modal-header modal-header-warning').addClass('modal-header modal-header-info');  
             } 
             $('#mensage').text('Client delete');
             $('#titulo').text('Information');
@@ -369,7 +370,7 @@ function deleteClient(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');  
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -558,5 +559,12 @@ function ResetClient(){
     $('#ResetClient').prop('disabled',true);
     $('#NewClient').prop('disabled',false);
     $('#DeleteClient').prop('disabled',false);
+    
+}
+
+function SendClientData(){    
+    
+    $('#comercialnamebill').val($('#comercialnameclient').val());
+    CodeClientSended = $('#codeclient').val();
     
 }

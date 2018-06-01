@@ -3,7 +3,7 @@ function login(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');
                 }
                 $('#mensage').text('Error with the server');
                 $('#titulo').text('Atenction!');
@@ -36,8 +36,8 @@ function login(){
                 $('#viewcompany').show();
             }else{                            
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
-                } 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');
+                }
                 $('#mensage').text(data.message);
                 $('#titulo').text('Atenction!');
                 $('#dialoginfo').modal({
@@ -48,7 +48,8 @@ function login(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                //$('#colortitulo').toggleClass('modal-header modal-header-warning');
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -66,7 +67,7 @@ function createCompany(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');
                 }
                 $('#newCompanyForm').modal('hide');
                 $('#mensage').text('Error with the server');
@@ -87,8 +88,8 @@ function createCompany(){
             $('#newCompanyForm').modal('hide');
             $('#view1').hide();
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
-                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
-            } 
+                $('#colortitulo').removeClass('modal-header modal-header-warning').addClass('modal-header modal-header-info');
+            }
             $('#mensage').text('New company create');
             $('#titulo').text('Information');
             $('#dialoginfo').modal({
@@ -98,7 +99,7 @@ function createCompany(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning');
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
@@ -116,7 +117,7 @@ function saveCompanyData(){
     $.ajax({
 	statusCode:{500:function(){
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                    $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
                 }
                 $('#newCompanyForm').modal('hide');
                 $('#mensage').text('Error with the server');
@@ -136,7 +137,7 @@ function saveCompanyData(){
                                      city:$('#city').val(),nif:$('#nif').val(),mobil:$('#mobilphone').val(),work:$('#workphone').val()}),
         success: function(data){                        
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
-                $('#colortitulo').toggleClass('modal-header modal-header-info'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-info'); 
             } 
             $('#mensage').text('Data company updated');
             $('#titulo').text('Information');
@@ -147,7 +148,7 @@ function saveCompanyData(){
         },                    
         error: function(error){
             if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
-                $('#colortitulo').toggleClass('modal-header modal-header-warning'); 
+                $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
             } 
             $('#mensage').text('Error with the server');
             $('#titulo').text('Atenction!');
