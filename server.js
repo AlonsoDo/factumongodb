@@ -26,6 +26,18 @@ MongoClient.connect(LocalUrl,function(err,database){
 });
 
 // Unprotect routes
+app.get('/bills',function(req,res){    
+    //db.collection('bills').find({companyId:req.decoded.companyId}).toArray(function(err,result){
+    db.collection('bills').find({companyId:1}).toArray(function(err,result){   
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); // To Postman by http://localhost:3000/bills GET
+        }
+    });     
+});
+
 // Company signup
 app.post('/companies',function(req,res){     
     autoIncrement.getNextSequence(db,'companies',function(err,autoIndex){
@@ -317,7 +329,7 @@ app.get('/products',function(req,res){
 
 app.post('/fillProduct',function(req,res){    
     console.log(parseInt(req.body.productCode))
-    db.collection('products').findOne({productId:parseInt(req.body.productCode)},function(err,result){
+    db.collection('products').findOne({ $and: [ { productId:parseInt(req.body.productCode) }, { companyId:req.decoded.companyId } ] } ,function(err,result){
         if(err){
             res.send(500,err.message);
         }else{        
@@ -410,29 +422,35 @@ app.delete('/deleteproduct',function(req,res){
 }); 
 
 // Bills
-app.post('/bills',function(req,res){     
+app.post('/savebill',function(req,res){     
     autoIncrement.getNextSequence(db,'bills',function(err,autoIndex){
         assert.equal(null,err);
-        console.log('Next: '+autoIndex);
-        var document = {billId:autoIndex,companyId:req.decoded.companyId,date:req.body.date,detail:req.body.detail}; 
-        db.collection('bills').save(document,function(err,result){
-            assert.equal(null,err);    
-            console.log('saved to database');        
-            res.json(result); // See README.md for detail extructure...and how to work with Postman
-        });
-    });     
-});
-
-app.get('/bills',function(req,res){    
-    db.collection('bills').find({companyId:req.decoded.companyId}).toArray(function(err,result){
         if(err){
             res.send(500,err.message);
-        }else{        
-            console.log(result);
-            res.json(result); // To Postman by http://localhost:3000/bills GET
         }
-    });     
+        console.log('Next: '+autoIndex);
+        var document = {billId:autoIndex,companyId:req.decoded.companyId,clientId:req.body.clientId,clientName:req.body.clientName,date:req.body.date,detail:req.body.detail}; 
+        db.collection('bills').save(document,function(err,result){
+            assert.equal(null,err);
+            if(err){
+                res.send(500,err.message);
+            }else{
+                console.log('saved to database');        
+                res.json(result); // See README.md for detail extructure...and how to work with Postman
+            }        
+        });
+    });
+    //console.log(req.body.test)
 });
+
+
+
+
+
+
+
+
+
 
 app.delete('/bills',function(req,res){
     db.collection('bills').remove({billId:parseInt(req.body.billId)},function(err,result){

@@ -320,6 +320,15 @@
                 DeleteLine();                
             });
             
+            $('#savebilldata').click(function(){                
+                SaveBill();                
+            });
+            
+            $('#resetbilldata').click(function(){                
+                $('#jqGrid').jqGrid('clearGridData');
+                $('#savebilldata').prop('disabled',true);
+            });                       
+            
         });
         
     </script>
@@ -522,7 +531,7 @@
                 <input type="text" id="comercialnamebill" class="form-control" maxlength="200" placeholder="Intro comercial name" style="float:left; margin-left:6px; margin-top:20px; width:300px; font-weight:bold; font-size:16px;"/>
                 <label style="margin:25px 0px 0px 30px; display:block; float:left; font-weight:bold; font-size:16px;">Bill Date:</label>
                 <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" style="float:left; margin-left:6px; margin-top:20px; width:200px; font-weight:bold; font-size:16px;"/>
+                    <input id='datebill' type='text' class="form-control" style="float:left; margin-left:6px; margin-top:20px; width:200px; font-weight:bold; font-size:16px;"/>
                     <span class="input-group-addon" style="margin-top:20px; float:left; height:34px; width:50px; ">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -544,7 +553,7 @@
             </div>            
             <div class="col-xs-2">
                 <div class="form-group">
-                    <button type="button" id="savebilldata" class="btn btn-default btn-lg" style="float:left; margin-left:30px; margin-top:5px;">
+                    <button type="button" id="savebilldata" disabled class="btn btn-default btn-lg" style="float:left; margin-left:30px; margin-top:5px;">
                         <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save changes
                     </button>
                 </div>                

@@ -511,6 +511,14 @@ function SendProductData(){
         
         jQuery('#jqGrid').jqGrid('addRowData', nRowId , { 'code': $('#codeproduct').val(), 'unity': 1, 'name': $('#productname').val(), 'price': parseFloat($('#productprice').val()), 'discount': parseFloat($('#productdiscount').val()), 'taxes': parseFloat($('#producttaxes').val()), 'amount': nAmount});
         nRowId++;
+        $('#savebilldata').prop('disabled',false);
+        
+        var TotalBill;
+    
+        var $grid = $('#jqGrid');
+        TotalBill = $grid.jqGrid('getCol', 'amount', false, 'sum');
+        
+        $('#totalbill').val(TotalBill.toFixed(2));
         
     }
     

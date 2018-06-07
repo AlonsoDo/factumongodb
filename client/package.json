@@ -1,6 +1,6 @@
 {
   "name": "BillsMongoDbClient",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Web App para programa de facturacion multicompania consumiendo RESTful Api",
   "main": "index.html",
   "keywords": [

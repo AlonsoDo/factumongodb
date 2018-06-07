@@ -151,33 +151,33 @@ function InitBillGrid(){
                         if (iCol==0) {                                  
                             fillProduct($('#jqGrid').jqGrid('getCell',rowid,'code'),iRow,rowid);                            
                         }else if (iCol==1) {                            
+                            CalcularImporte(rowid);
                             if ($('#jqGrid').jqGrid('getCell',rowid,'unity')!='') {
                                 $('#jqGrid').jqGrid('editCell',  iRow, 3, true);
                                 $('#' + iRow + "_" + 'price').select(); 
                             }else{
                                 $('#jqGrid').jqGrid('setCell', rowid, 'unity', '0');
                                 $('#jqGrid').jqGrid('editCell', rowid, 1, true);
-                            }
-                            CalcularImporte(rowid);
+                            }                            
                         }else if (iCol==3) {
+                            CalcularImporte(rowid);
                             if ($('#jqGrid').jqGrid('getCell',rowid,'price')!='') {
                                 $('#jqGrid').jqGrid('editCell',  iRow, 4, true);
                                 $('#' + iRow + "_" + 'discount').select();
                             }else{
                                 $('#jqGrid').jqGrid('setCell', rowid, 'price', '0');
                                 $('#jqGrid').jqGrid('editCell', rowid, 3, true);
-                            }
-                            CalcularImporte(rowid);
+                            }                            
                         }else if (iCol==4) {
+                            CalcularImporte(rowid);
                             if ($('#jqGrid').jqGrid('getCell',rowid,'discount')!='') {
                                 $('#jqGrid').jqGrid('editCell',  iRow, 5, true);
                                 $('#' + iRow + "_" + 'taxes').select();
                             }else{
                                 $('#jqGrid').jqGrid('setCell', rowid, 'discount', '0');
                                 $('#jqGrid').jqGrid('editCell', rowid, 4, true);
-                            }
-                            CalcularImporte(rowid);
-                        }else if (iCol==5) {
+                            }                            
+                        }else if (iCol==5) {                            
                             if ($('#jqGrid').jqGrid('getCell',rowid,'taxes')=='') {
                                 $('#jqGrid').jqGrid('setCell', rowid, 'taxes', '0');
                             }
@@ -197,6 +197,7 @@ function InitBillGrid(){
                             e.preventDefault();
                             $('#' + (iRow+1) + "_" + 'code').select();
                             nRowId++;
+                            $('#savebilldata').prop('disabled',false);
                         }else if ($('#jqGrid').getGridParam('reccount')!=iRow){                                                         
                             $('#jqGrid').jqGrid('editCell',  iRow+1, iCol, true);
                             if (iCol==0) {
@@ -275,6 +276,7 @@ function fillProduct(value,iRow,rowid){
                 $('#jqGrid').jqGrid('setCell', rowid, 'price', data.price);
                 $('#jqGrid').jqGrid('setCell', rowid, 'discount', data.discount);
                 $('#jqGrid').jqGrid('setCell', rowid, 'taxes', data.tax);
+                $('#savebilldata').prop('disabled',false);
             }
             $('#jqGrid').trigger( 'reloadGrid' );
             CalcularImporte(rowid);
@@ -327,7 +329,8 @@ function CalcularImporte(iRow){
 function NewLine(){
     
     jQuery('#jqGrid').jqGrid('addRowData', nRowId, { 'code': 0, 'unity': 1, 'name': 'Waiting for product...', 'price': 0, 'discount': 0, 'taxes': 0, 'amount': 0});
-    nRowId++;                        
+    nRowId++;
+    $('#savebilldata').prop('disabled',false); 
     
 }
 
@@ -336,5 +339,109 @@ function DeleteLine(){
     var selectedRowId = jQuery('#jqGrid').jqGrid ('getGridParam', 'selrow');
     console.log(selectedRowId)
     jQuery('#jqGrid').jqGrid('delRowData',selectedRowId);
+    
+    if ($('#jqGrid').getGridParam('reccount')==0) {
+        $('#savebilldata').prop('disabled',true); 
+    }
+    
+}
+
+function SaveBill(){
+    
+    if ($('#comercialnamebill').val()=='') {
+        if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+            $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
+        }                                
+        $('#mensage').text('You must enter a comercial name');
+        $('#titulo').text('Atenction!');
+        $('#dialoginfo').modal({
+            backdrop:'static',
+            keyboard:false  
+        });
+        return;
+    }
+    
+    if ($('#datebill').val()=='') {
+        if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+            $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
+        }                                
+        $('#mensage').text('You must enter a bill date');
+        $('#titulo').text('Atenction!');
+        $('#dialoginfo').modal({
+            backdrop:'static',
+            keyboard:false  
+        });
+        return;
+    } 
+    
+    var aDetailBill = [];
+    
+    $('#jqGrid').jqGrid('editCell', 0, 0, false);    
+    
+    var ids = jQuery('#jqGrid').jqGrid('getDataIDs');
+    for (var i = 0; i < ids.length; i++) {
+        var rowId = ids[i];
+        
+        var Code = $('#jqGrid').jqGrid('getCell',rowId,'code');
+        var Name = $('#jqGrid').jqGrid('getCell',rowId,'name');
+        var Unity = $('#jqGrid').jqGrid('getCell',rowId,'unity');
+        var Price = $('#jqGrid').jqGrid('getCell',rowId,'price');
+        var Discount = $('#jqGrid').jqGrid('getCell',rowId,'discount');
+        var Taxes = $('#jqGrid').jqGrid('getCell',rowId,'taxes');        
+        
+        if ((Code!='0') && (Name!='Product not found')){
+            aDetailBill.push({ name:Name , unity:Unity , price:Price , discount:Discount , taxes:Taxes});
+        }         
+        
+        console.log(rowId);
+    }    
+    
+    console.log(aDetailBill)
+    
+    if (aDetailBill.length>0) {     
+        $.ajax({
+            statusCode:{500:function(){
+                    if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+                        $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
+                    }                                
+                    $('#mensage').text('Error with the server');
+                    $('#titulo').text('Atenction!');
+                    $('#dialoginfo').modal({
+                        backdrop:'static',
+                        keyboard:false  
+                    }); 
+                }
+            },
+            headers: { 'x-access-token': AuthenticateToken },
+            url: 'http://localhost:3000/savebill',                    
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ clientId:$('#codeclient').val() , clientName:$('#comercialnamebill').val() , date:$('#datebill').val() ,                       detail:aDetailBill}),
+            success: function(data){
+                console.log(data)
+                if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){
+                    $('#colortitulo').removeClass('modal-header modal-header-warning').addClass('modal-header modal-header-info'); 
+                }            
+                $('#mensage').text('The bill was saved');
+                $('#titulo').text('Informaction');
+                $('#dialoginfo').modal({
+                    backdrop:'static',
+                    keyboard:false  
+                }); 
+            },                    
+            error: function(error){
+                if (($('#colortitulo').attr('class'))=='modal-header modal-header-info'){
+                    $('#colortitulo').removeClass('modal-header modal-header-info').addClass('modal-header modal-header-warning'); 
+                }            
+                $('#mensage').text('Error with the server');
+                $('#titulo').text('Atenction!');
+                $('#dialoginfo').modal({
+                    backdrop:'static',
+                    keyboard:false  
+                });                        
+            }
+        });
+        $('#savebilldata').prop('disabled',true);
+    }
     
 }
