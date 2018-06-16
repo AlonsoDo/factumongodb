@@ -416,7 +416,7 @@ function SaveBill(){
             url: 'http://localhost:3000/savebill',                    
             type: 'post',
             contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({ clientId:$('#codeclient').val() , clientName:$('#comercialnamebill').val() , date:$('#datebill').val() ,                       detail:aDetailBill}),
+            data: JSON.stringify({ clientId:$('#codeclient').val() , clientName:$('#comercialnamebill').val() , date:$('#datebill').val() , detail:aDetailBill}),
             success: function(data){
                 console.log(data)
                 if (($('#colortitulo').attr('class'))=='modal-header modal-header-warning'){

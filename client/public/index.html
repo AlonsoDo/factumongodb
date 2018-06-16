@@ -11,6 +11,7 @@
     <script src="js/client.js"></script>
     <script src="js/product.js"></script>
     <script src="js/bill.js"></script>
+    <script src="js/browse.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
@@ -45,11 +46,13 @@
             $('#viewclient').hide();
             $('#viewproduct').hide();
             $('#viewbill').hide();
+            $('#viewbrowse').hide();
             
             DeactiveClient();
             DeactiveProduct();
             
             InitBillGrid();
+            InitClientGrid();
             
             $('#login').click(function(){                
                 login();                
@@ -75,6 +78,7 @@
                 $('#viewclient').hide();
                 $('#viewproduct').hide();
                 $('#viewbill').hide();
+                $('#viewbrowse').hide();
             });
             
             $('#clientsdata').click(function(){                
@@ -82,6 +86,7 @@
                 $('#viewclient').show();
                 $('#viewproduct').hide();
                 $('#viewbill').hide();
+                $('#viewbrowse').hide();
             });
             
             $('#productsdata').click(function(){                
@@ -89,6 +94,7 @@
                 $('#viewclient').hide();
                 $('#viewproduct').show();
                 $('#viewbill').hide();
+                $('#viewbrowse').hide();
             });
             
             $('#billsdata').click(function(){                
@@ -96,6 +102,15 @@
                 $('#viewclient').hide();
                 $('#viewproduct').hide();
                 $('#viewbill').show();
+                $('#viewbrowse').hide();
+            });
+            
+            $('#browsedata').click(function(){                
+                $('#viewcompany').hide();
+                $('#viewclient').hide();
+                $('#viewproduct').hide();
+                $('#viewbill').hide();
+                $('#viewbrowse').show();
             });
             
             $('#searchclient').selectpicker({
@@ -327,7 +342,15 @@
             $('#resetbilldata').click(function(){                
                 $('#jqGrid').jqGrid('clearGridData');
                 $('#savebilldata').prop('disabled',true);
-            });                       
+            });
+            
+            $('#SearchClientsBrowse').click(function(){                
+                searchClientsBrowse();                
+            });
+            
+            $('#SearchClientsFilterBrowse').click(function(){                
+                searchClientsFilterBrowse();                
+            });
             
         });
         
@@ -572,6 +595,46 @@
                 </div>                
             </div>
         </div>        
+    </div>
+    <!-- Browse -->
+    <div id="viewbrowse" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:340px; margin-top:16px;">
+        <div class="row" style="margin-left:36px; margin-top:20px;">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <select id="searchclientbrowse" class="selectpicker form-control">
+                        <option value="clientId" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Client code</label>">Client code</option>
+                        <option value="comercialnameclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Comercial name</label>">Comercial name</option>
+                        <option value="email" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Email</label>">Email</option>
+                        <option value="postalcodeclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Postal code</label>">Postal code</option>
+                        <option value="cityclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>City</label>">City</option>
+                        <option value="nifclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>NIF</label>">NIF</option>
+                        <option value="mobilphoneclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Mobil phone</label>">Mobil phone</option>
+                        <option value="workphoneclient" data-content="<label style='color:black; font-weight:bold; font-size:16px;'>Work phone</label>">Work phone</option>
+                    </select>                    
+                </div>                
+            </div>            
+            <div class="col-xs-3">
+                <div class="form-group">            
+                    <input type="text" id="contentsearchclientbrowse" class="form-control" maxlength="200" placeholder="Search client" style="float:left; margin-left:16px; margin-top:8px; width:330px; font-weight:bold; font-size:16px;"/>
+                </div>                
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">            
+                    <button type="button" id="SearchClientsBrowse" class="btn btn-default btn-lg" title="Search clients" style="margin-left:120px; float:left;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>                
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">            
+                    <button type="button" id="SearchClientsFilterBrowse" class="btn btn-default btn-lg" title="Filter clients" style="margin-left:20px; float:left;"><span class="glyphicon glyphicon-filter" aria-hidden="true"></span></button>
+                </div>                
+            </div>            
+        </div>
+        <div class="row" style="float:left; margin-left:6px; margin-top:20px;">
+            <div class="col-xs-12">
+                <table id="jqClient"></table>                
+            </div>
+        </div>        
+        <hr class="colored" style="margin-top:240px;"/>  
     </div>
     <!-- Modal Informacion -->
     <div class="modal fade" id="dialoginfo" role="dialog">

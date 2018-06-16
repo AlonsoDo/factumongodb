@@ -216,22 +216,41 @@ app.get('/clients',function(req,res){
 app.post('/searchclients',function(req,res){     
     
     var cCad = req.body.orderresult;
-    console.log('Orden:'+cCad);    
     var mysort = {}; 
-    mysort[cCad] = 1;
-    console.log(mysort);
+    mysort[cCad] = 1;    
     
     var cCad2 = req.body.contentsearchclient;
     
     if (cCad=='clientId'){
-        cCad2=parseInt(cCad2);
-        console.log(cCad2);
+        cCad2=parseInt(cCad2);        
     }      
     
     var ObjToFind = {};
     ObjToFind['companyId']=req.decoded.companyId;    
-    ObjToFind[cCad]={$gte:cCad2};    
+    ObjToFind[cCad]={$gte:cCad2};
     
+    if (cCad=='mobilphoneclient'){
+        cCad = "phones.mobilphoneclient";
+        ObjToFind = {};
+        ObjToFind['companyId']=req.decoded.companyId;    
+        ObjToFind[cCad]={$gte:cCad2};
+        mysort = {};
+        mysort = {"phones.mobilphoneclient":1};
+        console.log(ObjToFind);
+        console.log(mysort);
+    }
+    
+    if (cCad=='workphoneclient'){
+        cCad = "phones.workphoneclient";
+        ObjToFind = {};
+        ObjToFind['companyId']=req.decoded.companyId;    
+        ObjToFind[cCad]={$gte:cCad2};
+        mysort = {};
+        mysort = {"phones.workphoneclient":1};
+        console.log(ObjToFind);
+        console.log(mysort);
+    }
+        
     db.collection('clients').find(ObjToFind).sort(mysort).toArray(function(err,result){
     
         if(err){
@@ -246,6 +265,12 @@ app.post('/searchclients',function(req,res){
 app.post('/searchclientsfilter',function(req,res){     
     
     var cCad = req.body.orderresult;
+    
+    if (cCad=="mobilphoneclient") {
+        cCad = "phones.mobilphoneclient";
+    }else if (cCad=="workphoneclient") {
+        cCad = "phones.workphoneclient";
+    }
     console.log('Orden:'+cCad);    
     var mysort = {}; 
     mysort[cCad] = 1;
