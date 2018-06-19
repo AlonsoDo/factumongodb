@@ -469,13 +469,57 @@ app.post('/savebill',function(req,res){
 });
 
 
+app.post('/fillgridbillsbrowse',function(req,res){
+    
+    console.log(req.body.clientId);
+    
+    var cCad2 = req.body.clientId;
+    
+    //cCad2 = parseInt(cCad2);
+    
+    var ObjToFind = {};
+    ObjToFind['companyId'] = req.decoded.companyId;    
+    ObjToFind['clientId'] = cCad2;
+    
+    console.log(ObjToFind)
+    
+    db.collection('bills').find(ObjToFind).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); 
+        }
+    });
+    
+});
 
-
-
-
-
-
-
+app.post('/fillgriddetailbrowse',function(req,res){
+    
+    console.log(req.body.billId);
+    
+    var cCad2 = req.body.billId;
+    
+    cCad2 = parseInt(cCad2);
+    
+    var ObjToFind = {};
+    ObjToFind['companyId'] = req.decoded.companyId;    
+    ObjToFind['billId'] = cCad2;
+    
+    console.log(ObjToFind)
+    
+    db.collection('bills').find(ObjToFind).toArray(function(err,result){
+    
+        if(err){
+            res.send(500,err.message);
+        }else{        
+            console.log(result);
+            res.json(result); 
+        }
+    });
+    
+});
 
 app.delete('/bills',function(req,res){
     db.collection('bills').remove({billId:parseInt(req.body.billId)},function(err,result){

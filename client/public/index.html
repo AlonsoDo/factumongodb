@@ -53,6 +53,8 @@
             
             InitBillGrid();
             InitClientGrid();
+            InitBillGridBrowse();
+            InitDetailGridBrowse();
             
             $('#login').click(function(){                
                 login();                
@@ -561,7 +563,7 @@
                 </div>                
             </div>
         </div>
-        <div class="row" style="float:left; margin-left:6px; margin-top:30px;">
+        <div class="row" style="float:left; margin-left:6px; margin-top:10px;">
             <div class="col-xs-12">
                 <table id="jqGrid"></table>                
             </div>
@@ -597,7 +599,7 @@
         </div>        
     </div>
     <!-- Browse -->
-    <div id="viewbrowse" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:340px; margin-top:16px;">
+    <div id="viewbrowse" style="float:left; background-color:#e8e8e8; border:0px black solid; width:1000px; height:880px; margin-top:16px;">
         <div class="row" style="margin-left:36px; margin-top:20px;">
             <div class="col-xs-3">
                 <div class="form-group">
@@ -634,7 +636,19 @@
                 <table id="jqClient"></table>                
             </div>
         </div>        
-        <hr class="colored" style="margin-top:240px;"/>  
+        <hr class="colored" style="margin-top:240px;"/>
+        <div class="row" style="float:left; margin-left:6px; margin-top:10px;">
+            <div class="col-xs-12">
+                <table id="jqBills"></table>                
+            </div>
+        </div>
+        <hr class="colored" style="margin-top:252px;"/>
+        <div class="row" style="float:left; margin-left:6px; margin-top:10px;">
+            <div class="col-xs-12">
+                <table id="jqDetail"></table>                
+            </div>
+        </div>
+        <hr class="colored" style="margin-top:260px;"/>
     </div>
     <!-- Modal Informacion -->
     <div class="modal fade" id="dialoginfo" role="dialog">
